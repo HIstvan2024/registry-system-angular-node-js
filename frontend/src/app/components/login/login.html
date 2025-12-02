@@ -1,4 +1,4 @@
-<form (ngSubmit)="onSubmit()" [formGroup]="f" novalidate>
+<form (ngSubmit)="onSubmit($event)" [formGroup]="f" novalidate>
   <div>
     <label>Felhasználó</label>
     <input formControlName="felhasznalo" autocomplete="username" />

@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
   standalone: true,
-  // Ha standalone komponens, add meg a szükséges importokat (ha nem standalone, akkor a modulban kell importálni ReactiveFormsModule)
-  // imports: [ReactiveFormsModule, RouterModule, CommonModule]
+  imports: [ReactiveFormsModule, RouterModule, CommonModule]
+  // Ha standalone komponens, adottak az importok itt (ha nem standalone, akkor a modulban kell importálni ReactiveFormsModule)
 })
 export class Login {
   f: FormGroup;
