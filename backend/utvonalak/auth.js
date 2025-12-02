@@ -10,6 +10,15 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES = '500h';
 
+// Helpful response for GET requests to /login so a browser visit doesn't hit the generic catch-all 404.
+// We explicitly tell clients to use POST for authentication.
+router.get('/login', (req, res) => {
+    res.set('Allow', 'POST');
+    return res.status(405).json({
+        message: 'Method Not Allowed. Use POST to /api/auth/login with JSON body { felhasznalo, jelszo }.'
+    });
+});
+
 router.post(
     '/login',
     [
@@ -25,12 +34,17 @@ router.post(
         try {
             // Megkeressük a felhasználót a felhasznalo mező alapján
             const user = await Felhasznalo.findOne({ felhasznalo });
+
             if (!user) return res.status(401).json({ message: 'Helytelen felhasz páros!' });
 
             const matched = await bcrypt.compare(jelszo, user.jelszoHash);
             if (!matched) return res.status(401).json({ message: 'Helytelen jelszó!' });
 
-            const token = jwt.sign({ id: user._id, felhasznalo: user.felhasznalo, role: user.role }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+            const token = jwt.sign(
+                { id: user._id, felhasznalo: user.felhasznalo, role: user.role },
+                JWT_SECRET,
+                { expiresIn: JWT_EXPIRES }
+            );
 
             // Visszaadjuk a tokent és a felhasználó nevét
             res.json({ token, felhasznalo: user.felhasznalo, role: user.role });
