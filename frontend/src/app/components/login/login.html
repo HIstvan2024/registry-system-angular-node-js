@@ -1,4 +1,4 @@
-<form (ngSubmit)="onSubmit($event)" [formGroup]="f" novalidate>
+<form [formGroup]="f" novalidate>
   <div>
     <label>Felhasználó</label>
     <input formControlName="felhasznalo" autocomplete="username" />
@@ -7,5 +7,5 @@
     <label>Jelszó</label>
     <input type="password" formControlName="jelszo" autocomplete="current-password" />
   </div>
-  <button type="submit">Bejelentkezés</button>
+  <button type="button" (click)="onSubmit($event)">Bejelentkezés</button>
 </form>

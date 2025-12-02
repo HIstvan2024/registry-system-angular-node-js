@@ -10,10 +10,10 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES = '500h';
 
-// Helpful response for GET requests to /login so a browser visit doesn't hit the generic catch-all 404.
-// We explicitly tell clients to use POST for authentication.
+// Return a clear JSON response for GET requests so the API endpoint does NOT redirect
+// to the frontend index.html (which happens when we redirect to '/' and the catch-all serves index.html).
 router.get('/login', (req, res) => {
-    res.set('Allow', 'POST');
+    res.set('Allow', 'POST, OPTIONS');
     return res.status(405).json({
         message: 'Method Not Allowed. Use POST to /api/auth/login with JSON body { felhasznalo, jelszo }.'
     });
@@ -39,6 +39,11 @@ router.post(
 
             const matched = await bcrypt.compare(jelszo, user.jelszoHash);
             if (!matched) return res.status(401).json({ message: 'Helytelen jelszó!' });
+
+            if (!JWT_SECRET) {
+                console.error('JWT_SECRET nem definiált - az env változót állítsd be.');
+                return res.status(500).json({ message: 'Szerver hiba: hiányzó konfiguráció' });
+            }
 
             const token = jwt.sign(
                 { id: user._id, felhasznalo: user.felhasznalo, role: user.role },
