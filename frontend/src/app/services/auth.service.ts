@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, tap } from 'rxjs';
 import { environment } from '../../environment/environment';
 
-interface LoginResp { token: string; username: string; role: string; }
+interface LoginResp { token: string; felhasznalo: string; role: string; }
 
 @Injectable({
   providedIn: 'root'
@@ -15,9 +15,9 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  // Figyelj: a backend username/password kulcsokat vár!
+  // Küldjük a magyar mezőneveket: felhasznalo / jelszo
   login(felhasznalo: string, jelszo: string) {
-    return this.http.post<LoginResp>(`${environment.apiUrl}/auth/login`, { username: felhasznalo, password: jelszo })
+    return this.http.post<LoginResp>(`${environment.apiUrl}/auth/login`, { felhasznalo, jelszo })
       .pipe(tap(res => {
         localStorage.setItem(this.tokenKey, res.token);
         this.userSub.next(res.token);

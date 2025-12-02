@@ -16,7 +16,8 @@ export interface Product {
   providedIn: 'root'
 })
 export class ProductService {
-  private base = `${environment.apiUrl}/products`;
+  // A backend egyezik a fronttal
+  private base = `${environment.apiUrl}/termekek`;
 
   constructor(private http: HttpClient) {}
 

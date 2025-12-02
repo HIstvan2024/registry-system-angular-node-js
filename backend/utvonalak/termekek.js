@@ -19,7 +19,7 @@ router.post(
     '/',
     auth,
     [
-        body('nev').trim().notEmpty().withMessage('Név Kötelező'),
+        body('nev').trim().notEmpty().withMessage('Név kötelező'),
         body('ar').notEmpty().withMessage('Ár kötelező').isFloat({ min: 0 }).withMessage('Ár egy olyan szám, amely >= 0'),
         body('mennyiseg').notEmpty().withMessage('Mennyiség kötelező').isInt({ min: 0 }).withMessage('Mennyiség egy integer típusú változó, amely >= 0'),
         body('sku').optional().trim()
@@ -28,14 +28,15 @@ router.post(
         const errors = validationResult(req);
         if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-        const { name: nev, sku, price: ar, quantity: mennyiseg, description: leiras } = req.body;
+        // Egységes, magyar mezőnevek: nev, ar, mennyiseg, leiras, sku
+        const { nev, sku, ar, mennyiseg, leiras } = req.body;
         try {
-            const query = [{ name: nev }];
+            const query = [{ nev }];
             if (sku) query.push({ sku });
             const existing = await Product.findOne({ $or: query });
             if (existing) return res.status(409).json({ message: 'Termék ugyanazzal a névvel vagy SKU-val már létezik!' });
 
-            const p = new Product({ name: nev, sku, price: ar, quantity: mennyiseg, description: leiras });
+            const p = new Product({ nev, sku, ar, mennyiseg, leiras });
             await p.save();
             res.status(201).json(p);
         } catch (err) {

@@ -1,4 +1,3 @@
-// Usage: node backend/scripts/seedAdmin.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 require('dotenv').config({ path: __dirname + '/../.env' });
@@ -10,9 +9,9 @@ if (!MONGO_URI || !ADMIN_USERNAME || !ADMIN_PASSWORD) {
 }
 
 const userSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
-    passwordHash: { type: String, required: true },
-    role: { type: String, default: 'user' }
+    felhasznalo: { type: String, required: true, unique: true },
+    jelszoHash: { type: String, required: true },
+    role: { type: String, default: 'admin' }
 });
 
 const Felhasznalo = mongoose.model('felhasználó', userSchema);
@@ -29,9 +28,9 @@ const Felhasznalo = mongoose.model('felhasználó', userSchema);
         }
 
         const salt = await bcrypt.genSalt(10);
-        const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, salt);
+        const jelszoHash = await bcrypt.hash(ADMIN_PASSWORD, salt);
 
-        const user = new Felhasznalo({ felhasznalo: ADMIN_USERNAME, passwordHash, role: 'admin' });
+        const user = new Felhasznalo({ felhasznalo: ADMIN_USERNAME, jelszoHash, role: 'admin' });
         await user.save();
         console.log('Admin felhasz létrehozva:', ADMIN_USERNAME);
         process.exit(0);

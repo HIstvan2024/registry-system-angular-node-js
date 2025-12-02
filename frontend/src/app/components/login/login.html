@@ -1,1 +1,11 @@
-<p>login works!</p>
+<form (ngSubmit)="onSubmit()" [formGroup]="f" novalidate>
+  <div>
+    <label>Felhasználó</label>
+    <input formControlName="felhasznalo" autocomplete="username" />
+  </div>
+  <div>
+    <label>Jelszó</label>
+    <input type="password" formControlName="jelszo" autocomplete="current-password" />
+  </div>
+  <button type="submit">Bejelentkezés</button>
+</form>
